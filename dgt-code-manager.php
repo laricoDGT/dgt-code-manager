@@ -34,4 +34,8 @@ function dgt_cm_init() {
 }
 add_action('plugins_loaded', 'dgt_cm_init');
 
-register_activation_hook(__FILE__, ['DGT_CM_DB', 'create_table']);
+function dgt_cm_activate() {
+    require_once DGT_CM_PATH . 'includes/class-db.php';
+    DGT_CM_DB::create_table();
+}
+register_activation_hook(__FILE__, 'dgt_cm_activate');
