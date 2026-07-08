@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) exit;
 
 class DGT_CM_Executor {
     public static function init() {
-        add_action('plugins_loaded', [__CLASS__, 'execute_php_snippets'], 0);
+        self::execute_php_snippets();
         
         // Frontend hooks
         add_action('wp_head', [__CLASS__, 'execute_css_snippets'], 100);
@@ -30,7 +30,8 @@ class DGT_CM_Executor {
         foreach ($snippets as $snippet) {
             if (self::check_scope($snippet->scope)) {
                 try {
-                    eval('?>' . $snippet->code);
+                    $code = preg_replace('/^\s*<\?php\s*/i', '', $snippet->code);
+                    eval($code);
                 } catch (Throwable $e) {
                     error_log('DGT Code Manager Error in snippet #' . $snippet->id . ': ' . $e->getMessage());
                 }

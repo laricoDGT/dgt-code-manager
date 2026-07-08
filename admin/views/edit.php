@@ -90,6 +90,9 @@ $is_new = empty($snippet);
                                     <option value="frontend"
                                         <?php echo !$is_new ? selected($snippet->scope, 'frontend', false) : 'selected="selected"'; ?>>Only
                                         on site front-end</option>
+                                    <option value="shortcode"
+                                        <?php echo !$is_new ? selected($snippet->scope, 'shortcode', false) : ''; ?>>Only
+                                        via shortcode</option>
                                 </select>
                             </div>
 

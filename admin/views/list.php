@@ -34,7 +34,13 @@ $snippets = DGT_CM_DB::get_snippets();
                         </td>
                         <td class="type column-type"><span class="dgt-badge badge-<?php echo esc_attr($snippet->type); ?>"><?php echo esc_html(strtoupper($snippet->type)); ?></span></td>
                         <td class="scope column-scope"><?php echo esc_html(ucfirst($snippet->scope)); ?></td>
-                        <td class="shortcode column-shortcode"><code>[dgt_snippet id="<?php echo $snippet->id; ?>"]</code></td>
+                        <td class="shortcode column-shortcode">
+                            <?php if ($snippet->scope === 'shortcode'): ?>
+                                <code>[dgt_snippet id="<?php echo $snippet->id; ?>"]</code>
+                            <?php else: ?>
+                                <span style="color: #999;">&mdash;</span>
+                            <?php endif; ?>
+                        </td>
                         <td class="status column-status">
                             <label class="dgt-switch">
                                 <input type="checkbox" class="dgt-toggle" data-id="<?php echo $snippet->id; ?>" <?php checked($snippet->active, 1); ?>>

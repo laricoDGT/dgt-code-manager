@@ -19,7 +19,8 @@ class DGT_CM_Shortcodes {
         ob_start();
         if ($snippet->type === 'php') {
             try {
-                eval('?>' . $snippet->code);
+                $code = preg_replace('/^\s*<\?php\s*/i', '', $snippet->code);
+                eval($code);
             } catch (Throwable $e) {
                 // error handling
             }
