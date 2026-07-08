@@ -4,9 +4,16 @@ if (!defined('ABSPATH')) exit;
 class DGT_CM_Executor {
     public static function init() {
         add_action('plugins_loaded', [__CLASS__, 'execute_php_snippets'], 0);
+        
+        // Frontend hooks
         add_action('wp_head', [__CLASS__, 'execute_css_snippets'], 100);
         add_action('wp_head', [__CLASS__, 'execute_js_head_snippets'], 100);
         add_action('wp_footer', [__CLASS__, 'execute_js_footer_snippets'], 100);
+
+        // Admin hooks
+        add_action('admin_head', [__CLASS__, 'execute_css_snippets'], 100);
+        add_action('admin_head', [__CLASS__, 'execute_js_head_snippets'], 100);
+        add_action('admin_print_footer_scripts', [__CLASS__, 'execute_js_footer_snippets'], 100);
     }
 
     private static function check_scope($scope) {
@@ -17,7 +24,9 @@ class DGT_CM_Executor {
     }
 
     public static function execute_php_snippets() {
-        $snippets = DGT_CM_DB::get_snippets(['active' => 1, 'type' => 'php']);
+        $all_snippets = DGT_CM_DB::get_active_snippets();
+        $snippets = isset($all_snippets['php']) ? $all_snippets['php'] : [];
+        
         foreach ($snippets as $snippet) {
             if (self::check_scope($snippet->scope)) {
                 try {
@@ -30,13 +39,14 @@ class DGT_CM_Executor {
     }
 
     public static function execute_css_snippets() {
-        $snippets = DGT_CM_DB::get_snippets(['active' => 1, 'type' => 'css']);
+        $all_snippets = DGT_CM_DB::get_active_snippets();
+        $snippets = isset($all_snippets['css']) ? $all_snippets['css'] : [];
         if (empty($snippets)) return;
         
         $css = '';
         foreach ($snippets as $snippet) {
             if (self::check_scope($snippet->scope)) {
-                $css .= "/* Snippet: {$snippet->name} */\n" . $snippet->code . "\n";
+                $css .= $snippet->code . "\n";
             }
         }
         
@@ -46,13 +56,14 @@ class DGT_CM_Executor {
     }
 
     public static function execute_js_head_snippets() {
-        $snippets = DGT_CM_DB::get_snippets(['active' => 1, 'type' => 'javascript']);
+        $all_snippets = DGT_CM_DB::get_active_snippets();
+        $snippets = isset($all_snippets['javascript']) ? $all_snippets['javascript'] : [];
         if (empty($snippets)) return;
         
         $js = '';
         foreach ($snippets as $snippet) {
             if (self::check_scope($snippet->scope)) {
-                $js .= "/* Snippet: {$snippet->name} */\n" . $snippet->code . "\n";
+                $js .= $snippet->code . "\n";
             }
         }
         

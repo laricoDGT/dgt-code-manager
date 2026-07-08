@@ -55,28 +55,63 @@ class DGT_CM_DB {
         return $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE id = %d", $id));
     }
 
+    public static function clear_cache() {
+        delete_transient('dgt_cm_active_snippets');
+    }
+
+    public static function get_active_snippets() {
+        $snippets = get_transient('dgt_cm_active_snippets');
+        
+        if (false === $snippets) {
+            $raw_snippets = self::get_snippets(['active' => 1]);
+            $snippets = [
+                'php' => [],
+                'css' => [],
+                'javascript' => [],
+                'html' => []
+            ];
+            
+            foreach ($raw_snippets as $snippet) {
+                if (isset($snippets[$snippet->type])) {
+                    $snippets[$snippet->type][] = $snippet;
+                }
+            }
+            
+            set_transient('dgt_cm_active_snippets', $snippets, 30 * DAY_IN_SECONDS);
+        }
+        
+        return $snippets;
+    }
+
     public static function insert_snippet($data) {
         global $wpdb;
         $table = self::get_table_name();
         $wpdb->insert($table, $data);
+        self::clear_cache();
         return $wpdb->insert_id;
     }
 
     public static function update_snippet($id, $data) {
         global $wpdb;
         $table = self::get_table_name();
-        return $wpdb->update($table, $data, ['id' => $id]);
+        $result = $wpdb->update($table, $data, ['id' => $id]);
+        self::clear_cache();
+        return $result;
     }
 
     public static function delete_snippet($id) {
         global $wpdb;
         $table = self::get_table_name();
-        return $wpdb->delete($table, ['id' => $id]);
+        $result = $wpdb->delete($table, ['id' => $id]);
+        self::clear_cache();
+        return $result;
     }
 
     public static function toggle_snippet($id, $status) {
         global $wpdb;
         $table = self::get_table_name();
-        return $wpdb->update($table, ['active' => $status], ['id' => $id]);
+        $result = $wpdb->update($table, ['active' => $status], ['id' => $id]);
+        self::clear_cache();
+        return $result;
     }
 }

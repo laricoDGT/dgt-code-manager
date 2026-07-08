@@ -5,35 +5,58 @@ class DGT_CM_Admin {
     public static function init() {
         add_action('admin_menu', [__CLASS__, 'add_menu_pages']);
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_assets']);
+        add_action('admin_init', [__CLASS__, 'handle_actions']);
+    }
+
+    public static function handle_actions() {
+        if (!isset($_GET['page']) || $_GET['page'] !== 'dgt-cm') {
+            return;
+        }
+
+        // Handle Delete
+        if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+            check_admin_referer('dgt_delete_' . $_GET['id']);
+            DGT_CM_DB::delete_snippet(intval($_GET['id']));
+            wp_safe_redirect(admin_url('tools.php?page=dgt-cm&message=deleted'));
+            exit;
+        }
+
+        // Handle Save
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dgt_cm_save'])) {
+            check_admin_referer('dgt_cm_save_snippet');
+            
+            $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+            $data = [
+                'name' => sanitize_text_field(wp_unslash($_POST['snippet_name'])),
+                'code' => wp_unslash($_POST['snippet_code']),
+                'description' => sanitize_textarea_field(wp_unslash($_POST['snippet_description'])),
+                'type' => sanitize_text_field(wp_unslash($_POST['snippet_type'])),
+                'scope' => sanitize_text_field(wp_unslash($_POST['snippet_scope'])),
+                'priority' => intval($_POST['snippet_priority']),
+                'tags' => sanitize_text_field(wp_unslash($_POST['snippet_tags'])),
+                'active' => isset($_POST['snippet_active']) ? 1 : 0
+            ];
+
+            if ($id > 0) {
+                DGT_CM_DB::update_snippet($id, $data);
+                $redirect_url = admin_url("tools.php?page=dgt-cm&action=edit&id=$id&message=updated");
+            } else {
+                $id = DGT_CM_DB::insert_snippet($data);
+                $redirect_url = admin_url("tools.php?page=dgt-cm&action=edit&id=$id&message=created");
+            }
+            
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
     }
 
     public static function add_menu_pages() {
-        add_menu_page(
+        add_management_page(
             'DGT Code Manager',
             'Code Manager',
             'manage_options',
             'dgt-cm',
-            [__CLASS__, 'render_list_page'],
-            'dashicons-editor-code',
-            20
-        );
-
-        add_submenu_page(
-            'dgt-cm',
-            'All Snippets',
-            'All Snippets',
-            'manage_options',
-            'dgt-cm',
             [__CLASS__, 'render_list_page']
-        );
-
-        add_submenu_page(
-            'dgt-cm',
-            'Add New',
-            'Add New',
-            'manage_options',
-            'dgt-cm-add',
-            [__CLASS__, 'render_edit_page']
         );
     }
 
@@ -48,9 +71,14 @@ class DGT_CM_Admin {
             'nonce' => wp_create_nonce('dgt_cm_nonce')
         ]);
 
-        if ($hook === 'dgt-code-manager_page_dgt-cm-add' || (isset($_GET['action']) && $_GET['action'] === 'edit')) {
-            wp_enqueue_script('wp-theme-plugin-editor');
-            wp_enqueue_style('wp-codemirror');
+        if (isset($_GET['action']) && $_GET['action'] === 'edit') {
+            $settings = wp_enqueue_code_editor(['type' => 'application/x-httpd-php']);
+            if ($settings !== false) {
+                wp_add_inline_script(
+                    'dgt-cm-admin-js',
+                    'var dgt_cm_editor_settings = ' . wp_json_encode($settings) . ';'
+                );
+            }
         }
     }
 
@@ -60,9 +88,7 @@ class DGT_CM_Admin {
             return;
         }
         
-        if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-            check_admin_referer('dgt_delete_' . $_GET['id']);
-            DGT_CM_DB::delete_snippet(intval($_GET['id']));
+        if (isset($_GET['message']) && $_GET['message'] === 'deleted') {
             echo '<div class="notice notice-success is-dismissible"><p>Snippet deleted.</p></div>';
         }
 
@@ -73,28 +99,11 @@ class DGT_CM_Admin {
         $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         $snippet = null;
         
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dgt_cm_save'])) {
-            check_admin_referer('dgt_cm_save_snippet');
-            
-            $data = [
-                'name' => sanitize_text_field($_POST['snippet_name']),
-                'code' => $_POST['snippet_code'],
-                'description' => sanitize_textarea_field($_POST['snippet_description']),
-                'type' => sanitize_text_field($_POST['snippet_type']),
-                'scope' => sanitize_text_field($_POST['snippet_scope']),
-                'priority' => intval($_POST['snippet_priority']),
-                'tags' => sanitize_text_field($_POST['snippet_tags']),
-                'active' => isset($_POST['snippet_active']) ? 1 : 0
-            ];
-
-            if ($id > 0) {
-                DGT_CM_DB::update_snippet($id, $data);
-                echo '<div class="notice notice-success is-dismissible"><p>Snippet updated.</p></div>';
-            } else {
-                $id = DGT_CM_DB::insert_snippet($data);
+        if (isset($_GET['message'])) {
+            if ($_GET['message'] === 'created') {
                 echo '<div class="notice notice-success is-dismissible"><p>Snippet created.</p></div>';
-                // redirect to edit to avoid double post
-                echo "<script>window.location.href='admin.php?page=dgt-cm&action=edit&id=$id';</script>";
+            } elseif ($_GET['message'] === 'updated') {
+                echo '<div class="notice notice-success is-dismissible"><p>Snippet updated.</p></div>';
             }
         }
 

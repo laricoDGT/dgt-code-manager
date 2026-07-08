@@ -5,7 +5,7 @@ $snippets = DGT_CM_DB::get_snippets();
 ?>
 <div class="wrap dgt-cm-wrap">
     <h1 class="wp-heading-inline">Snippets</h1>
-    <a href="?page=dgt-cm-add" class="page-title-action">Add New</a>
+    <a href="?page=dgt-cm&action=edit" class="page-title-action">Add New</a>
     
     <table class="wp-list-table widefat fixed striped table-view-list">
         <thead>
