@@ -1,0 +1,73 @@
+/* DGT Code Manager Admin Styles */
+
+.dgt-cm-wrap .dgt-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+}
+.badge-php { background-color: #8892BF; }
+.badge-css { background-color: #264de4; }
+.badge-javascript { background-color: #f0db4f; color: #323330; }
+.badge-html { background-color: #e34c26; }
+
+/* Toggle Switch */
+.dgt-switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+.dgt-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.dgt-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+.dgt-slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+}
+input:checked + .dgt-slider {
+    background-color: #2271b1;
+}
+input:focus + .dgt-slider {
+    box-shadow: 0 0 1px #2271b1;
+}
+input:checked + .dgt-slider:before {
+    transform: translateX(20px);
+}
+.dgt-slider.round {
+    border-radius: 20px;
+}
+.dgt-slider.round:before {
+    border-radius: 50%;
+}
+
+/* CodeMirror container */
+.dgt-editor-container {
+    margin-top: 20px;
+    border: 1px solid #ccd0d4;
+}
+.CodeMirror {
+    height: 400px;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 14px;
+}
