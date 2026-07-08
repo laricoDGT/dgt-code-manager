@@ -2,7 +2,7 @@
 /**
  * Plugin Name: DGT Code Manager 
  * Description: An easy, clean and simple way to enhance your site with code snippets.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: C.L.
  * Text Domain: dgt-code-manager
  */
