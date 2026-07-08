@@ -6,6 +6,13 @@ class DGT_CM_Admin {
         add_action('admin_menu', [__CLASS__, 'add_menu_pages']);
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_assets']);
         add_action('admin_init', [__CLASS__, 'handle_actions']);
+        add_filter('plugin_action_links_' . plugin_basename(DGT_CM_FILE), [__CLASS__, 'add_action_links']);
+    }
+
+    public static function add_action_links($links) {
+        $snippets_link = '<a href="' . admin_url('tools.php?page=dgt-cm') . '">Snippets</a>';
+        array_unshift($links, $snippets_link);
+        return $links;
     }
 
     public static function handle_actions() {
