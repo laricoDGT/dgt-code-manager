@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('DGT_CM_VERSION', '1.0.0');
+define('DGT_CM_VERSION', '1.0.1');
 define('DGT_CM_FILE', __FILE__);
 define('DGT_CM_PATH', plugin_dir_path(__FILE__));
 define('DGT_CM_URL', plugin_dir_url(__FILE__));
