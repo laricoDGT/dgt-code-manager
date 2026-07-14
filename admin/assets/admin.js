@@ -1,18 +1,18 @@
 jQuery(document).ready(function($) {
     // Toggle active status via AJAX
-    $('.cm-toggle').on('change', function() {
+    $('.codeweave-toggle').on('change', function() {
         var checkbox = $(this);
         var id = checkbox.data('id');
         var status = checkbox.is(':checked') ? 1 : 0;
 
         $.ajax({
-            url: cm.ajax_url,
+            url: codeweave.ajax_url,
             type: 'POST',
             data: {
-                action: 'cm_toggle',
+                action: 'codeweave_toggle',
                 id: id,
                 status: status,
-                nonce: cm.nonce
+                nonce: codeweave.nonce
             },
             success: function(response) {
                 if (!response.success) {
@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
 
     // Initialize CodeMirror if element exists
     if ($('#snippet_code').length && typeof wp !== 'undefined' && wp.codeEditor) {
-        var editorSettings = typeof cm_editor_settings !== 'undefined' ? cm_editor_settings : wp.codeEditor.defaultSettings;
+        var editorSettings = typeof codeweave_editor_settings !== 'undefined' ? codeweave_editor_settings : wp.codeEditor.defaultSettings;
         editorSettings = editorSettings ? _.clone(editorSettings) : {};
         
         editorSettings.codemirror = _.extend(
@@ -58,8 +58,8 @@ jQuery(document).ready(function($) {
         // Update stored content on change
         editor.codemirror.on('change', function(cm) {
             var type = $('#snippet_type').val();
-            typeContents[type] = cm.getValue();
-            $('#snippet_code').val(cm.getValue());
+            typeContents[type] = codeweave.getValue();
+            $('#snippet_code').val(codeweave.getValue());
         });
 
         // Change mode based on type selection

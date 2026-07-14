@@ -1,10 +1,10 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class CM_DB {
+class CODEWEAVE_DB {
     public static function get_table_name() {
         global $wpdb;
-        return $wpdb->prefix . CM_TABLE;
+        return $wpdb->prefix . CODEWEAVE_TABLE;
     }
 
     public static function create_table() {
@@ -56,11 +56,11 @@ class CM_DB {
     }
 
     public static function clear_cache() {
-        delete_transient('cm_active_snippets');
+        delete_transient('codeweave_active_snippets');
     }
 
     public static function get_active_snippets() {
-        $snippets = get_transient('cm_active_snippets');
+        $snippets = get_transient('codeweave_active_snippets');
         
         if (false === $snippets) {
             $raw_snippets = self::get_snippets(['active' => 1]);
@@ -77,7 +77,7 @@ class CM_DB {
                 }
             }
             
-            set_transient('cm_active_snippets', $snippets, 30 * DAY_IN_SECONDS);
+            set_transient('codeweave_active_snippets', $snippets, 30 * DAY_IN_SECONDS);
         }
         
         return $snippets;

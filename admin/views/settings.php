@@ -1,27 +1,27 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-$delete_on_uninstall = (bool) get_option('cm_delete_on_uninstall', 0);
+$delete_on_uninstall = (bool) get_option('codeweave_delete_on_uninstall', 0);
 ?>
-<div class="wrap cm-cm-wrap">
-    <form method="post" action="" class="cm-settings-form">
-        <?php wp_nonce_field('cm_settings_nonce'); ?>
+<div class="wrap codeweave-codeweave-wrap">
+    <form method="post" action="" class="codeweave-settings-form">
+        <?php wp_nonce_field('codeweave_settings_nonce'); ?>
 
         <div id="poststuff" style="margin-top: 20px;">
             <div id="post-body" class="metabox-holder">
-                <div class="postbox cm-postbox" style="max-width: 600px;">
+                <div class="postbox codeweave-postbox" style="max-width: 600px;">
                     <h2 class="hndle"><span>Uninstall Behaviour</span></h2>
                     <div class="inside">
-                        <div class="cm-setting-row">
-                            <label class="cm-inline-label">
+                        <div class="codeweave-setting-row">
+                            <label class="codeweave-inline-label">
                                 <span class="setting-title">Delete all snippets when the plugin is uninstalled</span>
-                                <div class="cm-switch-wrapper">
-                                    <label class="cm-switch">
-                                        <input type="checkbox" name="cm_delete_on_uninstall" id="cm_delete_on_uninstall"
+                                <div class="codeweave-switch-wrapper">
+                                    <label class="codeweave-switch">
+                                        <input type="checkbox" name="codeweave_delete_on_uninstall" id="codeweave_delete_on_uninstall"
                                             <?php checked($delete_on_uninstall, true); ?>>
-                                        <span class="cm-slider round"></span>
+                                        <span class="codeweave-slider round"></span>
                                     </label>
-                                    <span class="status-text" id="cm_delete_status_text">
+                                    <span class="status-text" id="codeweave_delete_status_text">
                                         <?php echo $delete_on_uninstall ? 'Yes, delete everything' : 'No, keep my data'; ?>
                                     </span>
                                 </div>
@@ -32,8 +32,8 @@ $delete_on_uninstall = (bool) get_option('cm_delete_on_uninstall', 0);
                             </p>
                         </div>
 
-                        <div class="cm-publish-actions">
-                            <button type="submit" name="cm_save_settings" class="button button-primary button-hero cm-save-btn">
+                        <div class="codeweave-publish-actions">
+                            <button type="submit" name="codeweave_save_settings" class="button button-primary button-hero codeweave-save-btn">
                                 Save Settings
                             </button>
                         </div>
@@ -45,7 +45,7 @@ $delete_on_uninstall = (bool) get_option('cm_delete_on_uninstall', 0);
 </div>
 
 <script>
-document.getElementById('cm_delete_on_uninstall').addEventListener('change', function () {
-    document.getElementById('cm_delete_status_text').textContent = this.checked ? 'Yes, delete everything' : 'No, keep my data';
+document.getElementById('codeweave_delete_on_uninstall').addEventListener('change', function () {
+    document.getElementById('codeweave_delete_status_text').textContent = this.checked ? 'Yes, delete everything' : 'No, keep my data';
 });
 </script>

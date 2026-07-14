@@ -1,11 +1,11 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-$snippets = CM_DB::get_snippets();
+$snippets = CODEWEAVE_DB::get_snippets();
 ?>
-<div class="wrap cm-wrap">
+<div class="wrap codeweave-wrap">
     <h1 class="wp-heading-inline">Snippets</h1>
-    <a href="?page=code-manager&action=edit" class="page-title-action">Add New</a>
+    <a href="?page=codeweave&action=edit" class="page-title-action">Add New</a>
     
     <table class="wp-list-table widefat fixed striped table-view-list">
         <thead>
@@ -26,25 +26,25 @@ $snippets = CM_DB::get_snippets();
                     <tr id="snippet-<?php echo $snippet->id; ?>">
                         <th scope="row" class="check-column"><input type="checkbox" name="snippet[]" value="<?php echo $snippet->id; ?>"></th>
                         <td class="name column-name has-row-actions column-primary">
-                            <strong><a class="row-title" href="?page=code-manager&action=edit&id=<?php echo $snippet->id; ?>"><?php echo esc_html($snippet->name); ?></a></strong>
+                            <strong><a class="row-title" href="?page=codeweave&action=edit&id=<?php echo $snippet->id; ?>"><?php echo esc_html($snippet->name); ?></a></strong>
                             <div class="row-actions">
-                                <span class="edit"><a href="?page=code-manager&action=edit&id=<?php echo $snippet->id; ?>">Edit</a> | </span>
-                                <span class="delete"><a class="submitdelete" href="<?php echo wp_nonce_url("?page=code-manager&action=delete&id={$snippet->id}", 'cm_delete_' . $snippet->id); ?>">Delete</a></span>
+                                <span class="edit"><a href="?page=codeweave&action=edit&id=<?php echo $snippet->id; ?>">Edit</a> | </span>
+                                <span class="delete"><a class="submitdelete" href="<?php echo wp_nonce_url("?page=codeweave&action=delete&id={$snippet->id}", 'codeweave_delete_' . $snippet->id); ?>">Delete</a></span>
                             </div>
                         </td>
-                        <td class="type column-type"><span class="cm-badge badge-<?php echo esc_attr($snippet->type); ?>"><?php echo esc_html(strtoupper($snippet->type)); ?></span></td>
+                        <td class="type column-type"><span class="codeweave-badge badge-<?php echo esc_attr($snippet->type); ?>"><?php echo esc_html(strtoupper($snippet->type)); ?></span></td>
                         <td class="scope column-scope"><?php echo esc_html(ucfirst($snippet->scope)); ?></td>
                         <td class="shortcode column-shortcode">
                             <?php if ($snippet->scope === 'shortcode'): ?>
-                                <code>[cm_snippet id="<?php echo $snippet->id; ?>"]</code>
+                                <code>[codeweave_snippet id="<?php echo $snippet->id; ?>"]</code>
                             <?php else: ?>
                                 <span style="color: #999;">&mdash;</span>
                             <?php endif; ?>
                         </td>
                         <td class="status column-status">
-                            <label class="cm-switch">
-                                <input type="checkbox" class="cm-toggle" data-id="<?php echo $snippet->id; ?>" <?php checked($snippet->active, 1); ?>>
-                                <span class="cm-slider round"></span>
+                            <label class="codeweave-switch">
+                                <input type="checkbox" class="codeweave-toggle" data-id="<?php echo $snippet->id; ?>" <?php checked($snippet->active, 1); ?>>
+                                <span class="codeweave-slider round"></span>
                             </label>
                         </td>
                     </tr>

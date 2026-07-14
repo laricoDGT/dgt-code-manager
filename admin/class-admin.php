@@ -1,45 +1,45 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class CM_Admin {
+class CODEWEAVE_Admin {
     public static function init() {
         add_action('admin_menu',            [__CLASS__, 'add_menu_pages']);
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_assets']);
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_delete_modal']);
         add_action('admin_init',            [__CLASS__, 'handle_actions']);
-        add_filter('plugin_action_links_' . plugin_basename(CM_FILE), [__CLASS__, 'add_action_links']);
+        add_filter('plugin_action_links_' . plugin_basename(CODEWEAVE_FILE), [__CLASS__, 'add_action_links']);
     }
 
     public static function add_action_links($links) {
-        $snippets_link = '<a href="' . admin_url('tools.php?page=code-manager') . '">Snippets</a>';
+        $snippets_link = '<a href="' . admin_url('tools.php?page=codeweave') . '">Snippets</a>';
         array_unshift($links, $snippets_link);
         return $links;
     }
 
     public static function handle_actions() {
-        if (!isset($_GET['page']) || $_GET['page'] !== 'code-manager') {
+        if (!isset($_GET['page']) || $_GET['page'] !== 'codeweave') {
             return;
         }
 
         // Handle Delete
         if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-            check_admin_referer('cm_delete_' . $_GET['id']);
-            CM_DB::delete_snippet(intval($_GET['id']));
-            wp_safe_redirect(admin_url('tools.php?page=code-manager&message=deleted'));
+            check_admin_referer('codeweave_delete_' . $_GET['id']);
+            CODEWEAVE_DB::delete_snippet(intval($_GET['id']));
+            wp_safe_redirect(admin_url('tools.php?page=codeweave&message=deleted'));
             exit;
         }
 
         // Handle Settings Save
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cm_save_settings'])) {
-            check_admin_referer('cm_settings_nonce');
-            update_option('cm_delete_on_uninstall', isset($_POST['cm_delete_on_uninstall']) ? 1 : 0);
-            wp_safe_redirect(admin_url('tools.php?page=code-manager&tab=settings&message=settings_saved'));
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codeweave_save_settings'])) {
+            check_admin_referer('codeweave_settings_nonce');
+            update_option('codeweave_delete_on_uninstall', isset($_POST['codeweave_delete_on_uninstall']) ? 1 : 0);
+            wp_safe_redirect(admin_url('tools.php?page=codeweave&tab=settings&message=settings_saved'));
             exit;
         }
 
         // Handle Save
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cm_save'])) {
-            check_admin_referer('cm_save_snippet');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codeweave_save'])) {
+            check_admin_referer('codeweave_save_snippet');
             
             $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             $data = [
@@ -54,11 +54,11 @@ class CM_Admin {
             ];
 
             if ($id > 0) {
-                CM_DB::update_snippet($id, $data);
-                $redirect_url = admin_url("tools.php?page=code-manager&action=edit&id=$id&message=updated");
+                CODEWEAVE_DB::update_snippet($id, $data);
+                $redirect_url = admin_url("tools.php?page=codeweave&action=edit&id=$id&message=updated");
             } else {
-                $id = CM_DB::insert_snippet($data);
-                $redirect_url = admin_url("tools.php?page=code-manager&action=edit&id=$id&message=created");
+                $id = CODEWEAVE_DB::insert_snippet($data);
+                $redirect_url = admin_url("tools.php?page=codeweave&action=edit&id=$id&message=created");
             }
             
             wp_safe_redirect($redirect_url);
@@ -68,31 +68,31 @@ class CM_Admin {
 
     public static function add_menu_pages() {
         add_management_page(
-            'Code Manager',
-            'Code Manager',
+            'CodeWeave',
+            'CodeWeave',
             'manage_options',
-            'code-manager',
+            'codeweave',
             [__CLASS__, 'render_list_page']
         );
     }
 
     public static function enqueue_assets($hook) {
-        if (strpos($hook, 'code-manager') === false) return;
+        if (strpos($hook, 'codeweave') === false) return;
 
-        wp_enqueue_style('cm-admin-css', CM_URL . 'admin/assets/admin.css', [], CM_VERSION);
-        wp_enqueue_script('cm-admin-js', CM_URL . 'admin/assets/admin.js', ['jquery'], CM_VERSION, true);
+        wp_enqueue_style('codeweave-admin-css', CODEWEAVE_URL . 'admin/assets/admin.css', [], CODEWEAVE_VERSION);
+        wp_enqueue_script('codeweave-admin-js', CODEWEAVE_URL . 'admin/assets/admin.js', ['jquery'], CODEWEAVE_VERSION, true);
         
-        wp_localize_script('cm-admin-js', 'cm', [
+        wp_localize_script('codeweave-admin-js', 'codeweave', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('cm_nonce')
+            'nonce' => wp_create_nonce('codeweave_nonce')
         ]);
 
         if (isset($_GET['action']) && $_GET['action'] === 'edit') {
             $settings = wp_enqueue_code_editor(['type' => 'application/x-httpd-php']);
             if ($settings !== false) {
                 wp_add_inline_script(
-                    'cm-admin-js',
-                    'var cm_editor_settings = ' . wp_json_encode($settings) . ';'
+                    'codeweave-admin-js',
+                    'var codeweave_editor_settings = ' . wp_json_encode($settings) . ';'
                 );
             }
         }
@@ -118,20 +118,20 @@ class CM_Admin {
         // Tab navigation
         echo '<div class="wrap">';
         echo '<nav class="nav-tab-wrapper" style="margin-bottom:0">';
-        echo '<a href="' . esc_url(admin_url('tools.php?page=code-manager')) . '" class="nav-tab' . ($current_tab === 'snippets' ? ' nav-tab-active' : '') . '">Snippets</a>';
-        echo '<a href="' . esc_url(admin_url('tools.php?page=code-manager&tab=settings')) . '" class="nav-tab' . ($current_tab === 'settings' ? ' nav-tab-active' : '') . '">Settings</a>';
+        echo '<a href="' . esc_url(admin_url('tools.php?page=codeweave')) . '" class="nav-tab' . ($current_tab === 'snippets' ? ' nav-tab-active' : '') . '">Snippets</a>';
+        echo '<a href="' . esc_url(admin_url('tools.php?page=codeweave&tab=settings')) . '" class="nav-tab' . ($current_tab === 'settings' ? ' nav-tab-active' : '') . '">Settings</a>';
         echo '</nav>';
         echo '</div>';
 
         if ($current_tab === 'settings') {
             self::render_settings_page();
         } else {
-            require_once CM_PATH . 'admin/views/list.php';
+            require_once CODEWEAVE_PATH . 'admin/views/list.php';
         }
     }
 
     public static function render_settings_page() {
-        require_once CM_PATH . 'admin/views/settings.php';
+        require_once CODEWEAVE_PATH . 'admin/views/settings.php';
     }
 
     public static function render_edit_page() {
@@ -147,27 +147,27 @@ class CM_Admin {
         }
 
         if ($id > 0) {
-            $snippet = CM_DB::get_snippet($id);
+            $snippet = CODEWEAVE_DB::get_snippet($id);
         }
 
-        require_once CM_PATH . 'admin/views/edit.php';
+        require_once CODEWEAVE_PATH . 'admin/views/edit.php';
     }
 
     public static function enqueue_delete_modal($hook) {
         if ($hook !== 'plugins.php') return;
 
         wp_enqueue_script(
-            'cm-delete-modal',
-            CM_URL . 'admin/assets/delete-modal.js',
+            'codeweave-delete-modal',
+            CODEWEAVE_URL . 'admin/assets/delete-modal.js',
             ['jquery'],
-            CM_VERSION,
+            CODEWEAVE_VERSION,
             true
         );
 
-        wp_localize_script('cm-delete-modal', 'cmDeleteModal', [
-            'plugin_file' => plugin_basename(CM_FILE),
+        wp_localize_script('codeweave-delete-modal', 'codeweaveDeleteModal', [
+            'plugin_file' => plugin_basename(CODEWEAVE_FILE),
             'ajax_url'    => admin_url('admin-ajax.php'),
-            'nonce'       => wp_create_nonce('cm_delete_modal_nonce'),
+            'nonce'       => wp_create_nonce('codeweave_delete_modal_nonce'),
         ]);
     }
 }

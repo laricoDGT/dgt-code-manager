@@ -1,18 +1,18 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class CM_Shortcodes {
+class CODEWEAVE_Shortcodes {
     public static function init() {
-        add_shortcode('cm_snippet', [__CLASS__, 'render_snippet']);
+        add_shortcode('codeweave_snippet', [__CLASS__, 'render_snippet']);
     }
 
     public static function render_snippet($atts) {
-        $atts = shortcode_atts(['id' => 0], $atts, 'cm_snippet');
+        $atts = shortcode_atts(['id' => 0], $atts, 'codeweave_snippet');
         $id = intval($atts['id']);
         
         if (!$id) return '';
         
-        $snippet = CM_DB::get_snippet($id);
+        $snippet = CODEWEAVE_DB::get_snippet($id);
         
         if (!$snippet || !$snippet->active) return '';
         
