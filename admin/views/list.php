@@ -1,11 +1,11 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-$snippets = DGT_CM_DB::get_snippets();
+$snippets = CM_DB::get_snippets();
 ?>
-<div class="wrap dgt-cm-wrap">
+<div class="wrap cm-wrap">
     <h1 class="wp-heading-inline">Snippets</h1>
-    <a href="?page=dgt-cm&action=edit" class="page-title-action">Add New</a>
+    <a href="?page=code-manager&action=edit" class="page-title-action">Add New</a>
     
     <table class="wp-list-table widefat fixed striped table-view-list">
         <thead>
@@ -26,25 +26,25 @@ $snippets = DGT_CM_DB::get_snippets();
                     <tr id="snippet-<?php echo $snippet->id; ?>">
                         <th scope="row" class="check-column"><input type="checkbox" name="snippet[]" value="<?php echo $snippet->id; ?>"></th>
                         <td class="name column-name has-row-actions column-primary">
-                            <strong><a class="row-title" href="?page=dgt-cm&action=edit&id=<?php echo $snippet->id; ?>"><?php echo esc_html($snippet->name); ?></a></strong>
+                            <strong><a class="row-title" href="?page=code-manager&action=edit&id=<?php echo $snippet->id; ?>"><?php echo esc_html($snippet->name); ?></a></strong>
                             <div class="row-actions">
-                                <span class="edit"><a href="?page=dgt-cm&action=edit&id=<?php echo $snippet->id; ?>">Edit</a> | </span>
-                                <span class="delete"><a class="submitdelete" href="<?php echo wp_nonce_url("?page=dgt-cm&action=delete&id={$snippet->id}", 'dgt_delete_' . $snippet->id); ?>">Delete</a></span>
+                                <span class="edit"><a href="?page=code-manager&action=edit&id=<?php echo $snippet->id; ?>">Edit</a> | </span>
+                                <span class="delete"><a class="submitdelete" href="<?php echo wp_nonce_url("?page=code-manager&action=delete&id={$snippet->id}", 'cm_delete_' . $snippet->id); ?>">Delete</a></span>
                             </div>
                         </td>
-                        <td class="type column-type"><span class="dgt-badge badge-<?php echo esc_attr($snippet->type); ?>"><?php echo esc_html(strtoupper($snippet->type)); ?></span></td>
+                        <td class="type column-type"><span class="cm-badge badge-<?php echo esc_attr($snippet->type); ?>"><?php echo esc_html(strtoupper($snippet->type)); ?></span></td>
                         <td class="scope column-scope"><?php echo esc_html(ucfirst($snippet->scope)); ?></td>
                         <td class="shortcode column-shortcode">
                             <?php if ($snippet->scope === 'shortcode'): ?>
-                                <code>[dgt_snippet id="<?php echo $snippet->id; ?>"]</code>
+                                <code>[cm_snippet id="<?php echo $snippet->id; ?>"]</code>
                             <?php else: ?>
                                 <span style="color: #999;">&mdash;</span>
                             <?php endif; ?>
                         </td>
                         <td class="status column-status">
-                            <label class="dgt-switch">
-                                <input type="checkbox" class="dgt-toggle" data-id="<?php echo $snippet->id; ?>" <?php checked($snippet->active, 1); ?>>
-                                <span class="dgt-slider round"></span>
+                            <label class="cm-switch">
+                                <input type="checkbox" class="cm-toggle" data-id="<?php echo $snippet->id; ?>" <?php checked($snippet->active, 1); ?>>
+                                <span class="cm-slider round"></span>
                             </label>
                         </td>
                     </tr>

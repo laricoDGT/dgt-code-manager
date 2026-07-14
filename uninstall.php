@@ -4,5 +4,5 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 }
 
 global $wpdb;
-$table_name = $wpdb->prefix . 'dgt_snippets';
+$table_name = $wpdb->prefix . 'cm_snippets';
 $wpdb->query("DROP TABLE IF EXISTS $table_name");

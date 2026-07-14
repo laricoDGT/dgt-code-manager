@@ -1,13 +1,13 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class DGT_CM_Ajax {
+class CM_Ajax {
     public static function init() {
-        add_action('wp_ajax_dgt_cm_toggle', [__CLASS__, 'toggle_snippet']);
+        add_action('wp_ajax_cm_toggle', [__CLASS__, 'toggle_snippet']);
     }
 
     public static function toggle_snippet() {
-        check_ajax_referer('dgt_cm_nonce', 'nonce');
+        check_ajax_referer('cm_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Unauthorized');
@@ -17,7 +17,7 @@ class DGT_CM_Ajax {
         $status = isset($_POST['status']) ? intval($_POST['status']) : 0;
 
         if ($id > 0) {
-            $updated = DGT_CM_DB::toggle_snippet($id, $status);
+            $updated = CM_DB::toggle_snippet($id, $status);
             if ($updated !== false) {
                 wp_send_json_success();
             }

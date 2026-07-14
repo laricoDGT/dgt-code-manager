@@ -1,18 +1,18 @@
 jQuery(document).ready(function($) {
     // Toggle active status via AJAX
-    $('.dgt-toggle').on('change', function() {
+    $('.cm-toggle').on('change', function() {
         var checkbox = $(this);
         var id = checkbox.data('id');
         var status = checkbox.is(':checked') ? 1 : 0;
 
         $.ajax({
-            url: dgt_cm.ajax_url,
+            url: cm.ajax_url,
             type: 'POST',
             data: {
-                action: 'dgt_cm_toggle',
+                action: 'cm_toggle',
                 id: id,
                 status: status,
-                nonce: dgt_cm.nonce
+                nonce: cm.nonce
             },
             success: function(response) {
                 if (!response.success) {
@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
 
     // Initialize CodeMirror if element exists
     if ($('#snippet_code').length && typeof wp !== 'undefined' && wp.codeEditor) {
-        var editorSettings = typeof dgt_cm_editor_settings !== 'undefined' ? dgt_cm_editor_settings : wp.codeEditor.defaultSettings;
+        var editorSettings = typeof cm_editor_settings !== 'undefined' ? cm_editor_settings : wp.codeEditor.defaultSettings;
         editorSettings = editorSettings ? _.clone(editorSettings) : {};
         
         editorSettings.codemirror = _.extend(

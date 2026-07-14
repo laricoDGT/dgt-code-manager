@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class DGT_CM_Executor {
+class CM_Executor {
     public static function init() {
         self::execute_php_snippets();
         
@@ -24,7 +24,7 @@ class DGT_CM_Executor {
     }
 
     public static function execute_php_snippets() {
-        $all_snippets = DGT_CM_DB::get_active_snippets();
+        $all_snippets = CM_DB::get_active_snippets();
         $snippets = isset($all_snippets['php']) ? $all_snippets['php'] : [];
         
         foreach ($snippets as $snippet) {
@@ -33,14 +33,14 @@ class DGT_CM_Executor {
                     $code = preg_replace('/^\s*<\?php\s*/i', '', $snippet->code);
                     eval($code);
                 } catch (Throwable $e) {
-                    error_log('DGT Code Manager Error in snippet #' . $snippet->id . ': ' . $e->getMessage());
+                    error_log('Code Manager Error in snippet #' . $snippet->id . ': ' . $e->getMessage());
                 }
             }
         }
     }
 
     public static function execute_css_snippets() {
-        $all_snippets = DGT_CM_DB::get_active_snippets();
+        $all_snippets = CM_DB::get_active_snippets();
         $snippets = isset($all_snippets['css']) ? $all_snippets['css'] : [];
         if (empty($snippets)) return;
         
@@ -52,12 +52,12 @@ class DGT_CM_Executor {
         }
         
         if (!empty($css)) {
-            echo "<style id='dgt-cm-css'>\n" . $css . "</style>\n";
+            echo "<style id='cm-css'>\n" . $css . "</style>\n";
         }
     }
 
     public static function execute_js_head_snippets() {
-        $all_snippets = DGT_CM_DB::get_active_snippets();
+        $all_snippets = CM_DB::get_active_snippets();
         $snippets = isset($all_snippets['javascript']) ? $all_snippets['javascript'] : [];
         if (empty($snippets)) return;
         
@@ -69,7 +69,7 @@ class DGT_CM_Executor {
         }
         
         if (!empty($js)) {
-            echo "<script id='dgt-cm-js-head'>\n" . $js . "</script>\n";
+            echo "<script id='cm-js-head'>\n" . $js . "</script>\n";
         }
     }
 

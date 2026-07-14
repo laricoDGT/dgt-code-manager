@@ -1,10 +1,10 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class DGT_CM_DB {
+class CM_DB {
     public static function get_table_name() {
         global $wpdb;
-        return $wpdb->prefix . DGT_CM_TABLE;
+        return $wpdb->prefix . CM_TABLE;
     }
 
     public static function create_table() {
@@ -56,11 +56,11 @@ class DGT_CM_DB {
     }
 
     public static function clear_cache() {
-        delete_transient('dgt_cm_active_snippets');
+        delete_transient('cm_active_snippets');
     }
 
     public static function get_active_snippets() {
-        $snippets = get_transient('dgt_cm_active_snippets');
+        $snippets = get_transient('cm_active_snippets');
         
         if (false === $snippets) {
             $raw_snippets = self::get_snippets(['active' => 1]);
@@ -77,7 +77,7 @@ class DGT_CM_DB {
                 }
             }
             
-            set_transient('dgt_cm_active_snippets', $snippets, 30 * DAY_IN_SECONDS);
+            set_transient('cm_active_snippets', $snippets, 30 * DAY_IN_SECONDS);
         }
         
         return $snippets;

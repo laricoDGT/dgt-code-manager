@@ -1,16 +1,16 @@
 /* General Wrapper */
-.dgt-cm-wrap {
+.cm-wrap {
   margin-top: 20px;
 }
 
 /* Header */
-.dgt-edit-header {
+.cm-edit-header {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
   gap: 15px;
 }
-.dgt-edit-header h1 {
+.cm-edit-header h1 {
   margin: 0;
   padding: 0;
   font-size: 24px;
@@ -18,15 +18,15 @@
 }
 
 /* Form Layout */
-.dgt-snippet-form {
+.cm-snippet-form {
   max-width: 1200px;
 }
 
 /* Title Input */
-.dgt-title-wrapper {
+.cm-title-wrapper {
   margin-bottom: 25px;
 }
-.dgt-title-input {
+.cm-title-input {
   width: 100%;
   padding: 15px 20px;
   font-size: 20px;
@@ -37,14 +37,14 @@
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
-.dgt-title-input:focus {
+.cm-title-input:focus {
   border-color: #2271b1;
   box-shadow: 0 2px 8px rgba(34, 113, 177, 0.1);
   outline: none;
 }
 
 /* Editor Wrapper */
-.dgt-editor-wrapper {
+.cm-editor-wrapper {
   background: #fff;
   border-radius: 8px;
   overflow: hidden;
@@ -52,7 +52,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   border: 1px solid #ccd0d4;
 }
-.dgt-editor-header {
+.cm-editor-header {
   background: #f6f7f7;
   padding: 12px 15px;
   display: flex;
@@ -60,7 +60,7 @@
   gap: 8px;
   border-bottom: 1px solid #ccd0d4;
 }
-.dgt-editor-header .dot {
+.cm-editor-header .dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -82,10 +82,10 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
-.dgt-editor-container {
+.cm-editor-container {
   background: #fff;
 }
-.dgt-editor-container textarea {
+.cm-editor-container textarea {
   width: 100%;
   min-height: 450px;
   background: #fff;
@@ -97,11 +97,11 @@
   resize: vertical;
   box-sizing: border-box;
 }
-.dgt-editor-container textarea:focus {
+.cm-editor-container textarea:focus {
   outline: none;
   box-shadow: none;
 }
-.dgt-php-hint {
+.cm-php-hint {
   background: #f9f9f9;
   padding: 10px 10px 0 45px;
   font-family: "JetBrains Mono", Consolas, Monaco, monospace;
@@ -120,21 +120,21 @@
 }
 
 /* Description Area */
-.dgt-description-wrapper {
+.cm-description-wrapper {
   background: #fff;
   padding: 20px;
   border-radius: 8px;
   border: 1px solid #ccd0d4;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
 }
-.dgt-label {
+.cm-label {
   display: block;
   font-weight: 600;
   margin-bottom: 10px;
   font-size: 14px;
   color: #1d2327;
 }
-.dgt-textarea {
+.cm-textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #c3c4c7;
@@ -143,19 +143,19 @@
   resize: vertical;
   box-sizing: border-box;
 }
-.dgt-textarea:focus {
+.cm-textarea:focus {
   border-color: #2271b1;
   box-shadow: 0 0 0 1px #2271b1;
   outline: none;
 }
 
 /* Sidebar Settings */
-.dgt-sidebar .dgt-postbox {
+.cm-sidebar .cm-postbox {
   border-radius: 8px;
   border: 1px solid #ccd0d4;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
 }
-.dgt-postbox .hndle {
+.cm-postbox .hndle {
   font-size: 15px;
   font-weight: 600;
   padding: 15px 20px;
@@ -163,15 +163,15 @@
   background: #f6f7f7;
   border-radius: 8px 8px 0 0;
 }
-.dgt-postbox .inside {
+.cm-postbox .inside {
   padding: 0;
   margin: 0;
 }
-.dgt-setting-row {
+.cm-setting-row {
   padding: 15px 20px;
   border-bottom: 1px solid #f0f0f1;
 }
-.dgt-setting-row:last-child {
+.cm-setting-row:last-child {
   border-bottom: none;
 }
 .setting-title {
@@ -181,15 +181,15 @@
   margin-bottom: 8px;
   font-size: 13px;
 }
-.dgt-inline-label {
+.cm-inline-label {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.dgt-inline-label .setting-title {
+.cm-inline-label .setting-title {
   margin-bottom: 0;
 }
-.dgt-switch-wrapper {
+.cm-switch-wrapper {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -202,30 +202,30 @@
 }
 
 /* Inputs and Selects in Sidebar */
-.dgt-select,
-.dgt-input {
+.cm-select,
+.cm-input {
   width: 100%;
   padding: 6px 10px;
   border-radius: 4px;
   border: 1px solid #8c8f94;
   box-sizing: border-box;
 }
-.dgt-select:focus,
-.dgt-input:focus {
+.cm-select:focus,
+.cm-input:focus {
   border-color: #2271b1;
   box-shadow: 0 0 0 1px #2271b1;
   outline: none;
 }
 
 /* Publish Actions */
-.dgt-publish-actions {
+.cm-publish-actions {
   padding: 15px 20px;
   background: #f6f7f7;
   border-radius: 0 0 8px 8px;
   text-align: right;
   border-top: 1px solid #ccd0d4;
 }
-.dgt-save-btn {
+.cm-save-btn {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
@@ -242,19 +242,19 @@
   box-shadow: 0 4px 10px rgba(34, 113, 177, 0.2) !important;
   transition: all 0.3s ease !important;
 }
-.dgt-save-btn:hover {
+.cm-save-btn:hover {
   background: #135e96 !important;
   box-shadow: 0 6px 14px rgba(34, 113, 177, 0.3) !important;
   transform: translateY(-1px);
 }
-.dgt-save-btn .dashicons {
+.cm-save-btn .dashicons {
   font-size: 18px;
   width: 18px;
   height: 18px;
 }
 
 /* Badges (from before) */
-.dgt-cm-wrap .dgt-badge {
+.cm-wrap .cm-badge {
   display: inline-block;
   padding: 3px 8px;
   border-radius: 3px;
@@ -277,18 +277,18 @@
 }
 
 /* Toggle Switch (from before) */
-.dgt-switch {
+.cm-switch {
   position: relative;
   display: inline-block;
   width: 36px;
   height: 20px;
 }
-.dgt-switch input {
+.cm-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-.dgt-slider {
+.cm-slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -298,7 +298,7 @@
   background-color: #ccc;
   transition: 0.4s;
 }
-.dgt-slider:before {
+.cm-slider:before {
   position: absolute;
   content: "";
   height: 14px;
@@ -308,18 +308,18 @@
   background-color: white;
   transition: 0.4s;
 }
-input:checked + .dgt-slider {
+input:checked + .cm-slider {
   background-color: #2271b1;
 }
-input:focus + .dgt-slider {
+input:focus + .cm-slider {
   box-shadow: 0 0 1px #2271b1;
 }
-input:checked + .dgt-slider:before {
+input:checked + .cm-slider:before {
   transform: translateX(16px);
 }
-.dgt-slider.round {
+.cm-slider.round {
   border-radius: 20px;
 }
-.dgt-slider.round:before {
+.cm-slider.round:before {
   border-radius: 50%;
 }

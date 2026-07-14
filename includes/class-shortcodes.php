@@ -1,18 +1,18 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class DGT_CM_Shortcodes {
+class CM_Shortcodes {
     public static function init() {
-        add_shortcode('dgt_snippet', [__CLASS__, 'render_snippet']);
+        add_shortcode('cm_snippet', [__CLASS__, 'render_snippet']);
     }
 
     public static function render_snippet($atts) {
-        $atts = shortcode_atts(['id' => 0], $atts, 'dgt_snippet');
+        $atts = shortcode_atts(['id' => 0], $atts, 'cm_snippet');
         $id = intval($atts['id']);
         
         if (!$id) return '';
         
-        $snippet = DGT_CM_DB::get_snippet($id);
+        $snippet = CM_DB::get_snippet($id);
         
         if (!$snippet || !$snippet->active) return '';
         
