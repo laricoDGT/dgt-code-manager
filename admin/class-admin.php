@@ -11,7 +11,9 @@ class CODEWEAVE_Admin {
     }
 
     public static function add_action_links($links) {
-        $snippets_link = '<a href="' . admin_url('tools.php?page=codeweave') . '">Snippets</a>';
+        $snippets_link = '<a href="' . esc_url(admin_url('tools.php?page=codeweave')) . '">Snippets</a>';
+        $settings_link = '<a href="' . esc_url(admin_url('tools.php?page=codeweave&tab=settings')) . '">Settings</a>';
+        array_unshift($links, $settings_link);
         array_unshift($links, $snippets_link);
         return $links;
     }
@@ -19,6 +21,10 @@ class CODEWEAVE_Admin {
     public static function handle_actions() {
         if (!isset($_GET['page']) || $_GET['page'] !== 'codeweave') {
             return;
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'codeweave'));
         }
 
         // Handle Delete

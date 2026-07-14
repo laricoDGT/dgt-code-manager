@@ -1,0 +1,72 @@
+name: Build, Tag & Deploy to WordPress.org
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  bump_version_and_deploy:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Increment version in files
+        id: version_bump
+        run: |
+          node -e "
+          const fs = require('fs');
+
+          // Read and update codeweave.php
+          let codeweave = fs.readFileSync('codeweave.php', 'utf8');
+          const versionMatch = codeweave.match(/Version:\\s*(\\d+\\.\\d+\\.\\d+)/);
+          if (!versionMatch) {
+              console.error('Could not find Version in codeweave.php');
+              process.exit(1);
+          }
+          const oldVersion = versionMatch[1];
+          const parts = oldVersion.split('.').map(Number);
+          parts[2] += 1; // Increment patch version
+          const newVersion = parts.join('.');
+          console.log('Bumping version from ' + oldVersion + ' to ' + newVersion);
+
+          codeweave = codeweave.replace(/Version:\\s*\\d+\\.\\d+\\.\\d+/, 'Version: ' + newVersion);
+          codeweave = codeweave.replace(/define\\('CODEWEAVE_VERSION',\\s*'[^']+'\\)/, 'define(\\'CODEWEAVE_VERSION\\', \\'' + newVersion + '\\')');
+          fs.writeFileSync('codeweave.php', codeweave, 'utf8');
+
+          // Read and update readme.txt
+          let readme = fs.readFileSync('readme.txt', 'utf8');
+          readme = readme.replace(/Stable tag:\\s*\\d+\\.\\d+\\.\\d+/, 'Stable tag: ' + newVersion);
+          fs.writeFileSync('readme.txt', readme, 'utf8');
+
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, 'new_version=' + newVersion + '\n');
+          "
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add codeweave.php readme.txt
+          git commit -m "Bump version to ${{ steps.version_bump.outputs.new_version }} [skip ci]"
+          git push origin main
+
+      - name: Create and push tag
+        run: |
+          git tag ${{ steps.version_bump.outputs.new_version }}
+          git push origin ${{ steps.version_bump.outputs.new_version }}
+
+      - name: Deploy to WordPress.org SVN
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}

@@ -43,8 +43,10 @@ class CODEWEAVE_DB {
             $where .= $wpdb->prepare(" AND type = %s", $args['type']);
         }
 
-        $order_by = isset($args['orderby']) ? esc_sql($args['orderby']) : 'priority';
-        $order = isset($args['order']) ? esc_sql($args['order']) : 'ASC';
+        $allowed_orderby = ['id', 'name', 'type', 'scope', 'priority', 'active', 'created_at', 'updated_at'];
+        $order_by = (isset($args['orderby']) && in_array($args['orderby'], $allowed_orderby, true)) ? $args['orderby'] : 'priority';
+
+        $order = (isset($args['order']) && strtoupper($args['order']) === 'DESC') ? 'DESC' : 'ASC';
 
         return $wpdb->get_results("SELECT * FROM $table WHERE $where ORDER BY $order_by $order");
     }
