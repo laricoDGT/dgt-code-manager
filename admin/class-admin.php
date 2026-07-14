@@ -3,9 +3,10 @@ if (!defined('ABSPATH')) exit;
 
 class CM_Admin {
     public static function init() {
-        add_action('admin_menu', [__CLASS__, 'add_menu_pages']);
+        add_action('admin_menu',            [__CLASS__, 'add_menu_pages']);
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_assets']);
-        add_action('admin_init', [__CLASS__, 'handle_actions']);
+        add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_delete_modal']);
+        add_action('admin_init',            [__CLASS__, 'handle_actions']);
         add_filter('plugin_action_links_' . plugin_basename(CM_FILE), [__CLASS__, 'add_action_links']);
     }
 
@@ -25,6 +26,14 @@ class CM_Admin {
             check_admin_referer('cm_delete_' . $_GET['id']);
             CM_DB::delete_snippet(intval($_GET['id']));
             wp_safe_redirect(admin_url('tools.php?page=code-manager&message=deleted'));
+            exit;
+        }
+
+        // Handle Settings Save
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cm_save_settings'])) {
+            check_admin_referer('cm_settings_nonce');
+            update_option('cm_delete_on_uninstall', isset($_POST['cm_delete_on_uninstall']) ? 1 : 0);
+            wp_safe_redirect(admin_url('tools.php?page=code-manager&tab=settings&message=settings_saved'));
             exit;
         }
 
@@ -94,12 +103,35 @@ class CM_Admin {
             self::render_edit_page();
             return;
         }
-        
-        if (isset($_GET['message']) && $_GET['message'] === 'deleted') {
-            echo '<div class="notice notice-success is-dismissible"><p>Snippet deleted.</p></div>';
+
+        $current_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'snippets';
+
+        // Notices
+        if (isset($_GET['message'])) {
+            if ($_GET['message'] === 'deleted') {
+                echo '<div class="notice notice-success is-dismissible"><p>Snippet deleted.</p></div>';
+            } elseif ($_GET['message'] === 'settings_saved') {
+                echo '<div class="notice notice-success is-dismissible"><p>Settings saved.</p></div>';
+            }
         }
 
-        require_once CM_PATH . 'admin/views/list.php';
+        // Tab navigation
+        echo '<div class="wrap">';
+        echo '<nav class="nav-tab-wrapper" style="margin-bottom:0">';
+        echo '<a href="' . esc_url(admin_url('tools.php?page=code-manager')) . '" class="nav-tab' . ($current_tab === 'snippets' ? ' nav-tab-active' : '') . '">Snippets</a>';
+        echo '<a href="' . esc_url(admin_url('tools.php?page=code-manager&tab=settings')) . '" class="nav-tab' . ($current_tab === 'settings' ? ' nav-tab-active' : '') . '">Settings</a>';
+        echo '</nav>';
+        echo '</div>';
+
+        if ($current_tab === 'settings') {
+            self::render_settings_page();
+        } else {
+            require_once CM_PATH . 'admin/views/list.php';
+        }
+    }
+
+    public static function render_settings_page() {
+        require_once CM_PATH . 'admin/views/settings.php';
     }
 
     public static function render_edit_page() {
@@ -119,5 +151,23 @@ class CM_Admin {
         }
 
         require_once CM_PATH . 'admin/views/edit.php';
+    }
+
+    public static function enqueue_delete_modal($hook) {
+        if ($hook !== 'plugins.php') return;
+
+        wp_enqueue_script(
+            'cm-delete-modal',
+            CM_URL . 'admin/assets/delete-modal.js',
+            ['jquery'],
+            CM_VERSION,
+            true
+        );
+
+        wp_localize_script('cm-delete-modal', 'cmDeleteModal', [
+            'plugin_file' => plugin_basename(CM_FILE),
+            'ajax_url'    => admin_url('admin-ajax.php'),
+            'nonce'       => wp_create_nonce('cm_delete_modal_nonce'),
+        ]);
     }
 }
